@@ -1,6 +1,7 @@
 version: 2
+
 jobs:
-  build:
+  deploy:
     working_directory: ~/tmp
     docker:
       - image: circleci/node:7
@@ -8,3 +9,15 @@ jobs:
       - checkout
       - run: npm install
       - run: npm test
+
+workflows:
+  version: 2
+  test-deploy:
+    jobs:
+      - deploy:
+      # Run the deploy job only when a commit is tagged with a version number and pushed.
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/
