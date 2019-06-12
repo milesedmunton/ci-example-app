@@ -1,21 +1,57 @@
 version: 2
 
 jobs:
-  deploy:
-    working_directory: ~/tmp
+  test:
+    working_directory: ~/repo
     docker:
       - image: circleci/node:7
     steps:
       - checkout
-      - run: npm install
+      - restore_cache:
+      # Restore dependencies from the cache.
+          keys:
+          # Only install dependencies when the checksum of the package.json changes.
+          - v1-dependencies-{{ checksum "package.json" }}
+          # Fallback to using the latest cache if no exact match is found.
+          - v1-dependencies-
+      - run:
+          name: Install dependencies
+          command: npm install
+      - run:
+          name: Run tests
+          command: npm test
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - persist_to_workspace:
+      # Persist the previous steps to the workspace.
+          root: ~/repo
+          paths: .
+
+  deploy:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:7
+    steps:
+      - attach_workspace:
+      # Attach to the created workspace.
+          at: ~/repo
       - run: npm test
 
 workflows:
   version: 2
   test-deploy:
     jobs:
+      - test:
+      # Run the test job on all branches and tags.
+          filters:
+            tags:
+              only: /^v.*/
       - deploy:
       # Run the deploy job only when a commit is tagged with a version number and pushed.
+          requires:
+            - test
           filters:
             tags:
               only: /^v.*/
