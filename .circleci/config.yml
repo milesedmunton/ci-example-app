@@ -46,8 +46,8 @@ workflows:
       - test:
       # Run the test job on all branches and tags.
           filters:
-            tags:
-              only: /^v.*/
+            branches:
+              only: master
       - deploy:
       # Run the deploy job only when a commit is tagged with a version number and pushed.
           requires:
