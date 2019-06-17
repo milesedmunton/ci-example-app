@@ -46,7 +46,6 @@ workflows:
       - test:
       # Run the test job on all branches and tags.
           filters:
-            filters:
             tags:
               only: /^v.*/
       - deploy:
