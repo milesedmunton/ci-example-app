@@ -38,6 +38,9 @@ jobs:
       # Attach to the created workspace.
           at: ~/repo
       - run: npm test
+      - run:
+          name: Deploy assets to CDN
+          command: npm run deploy
 
 workflows:
   version: 2
