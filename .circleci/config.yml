@@ -71,8 +71,3 @@ workflows:
       # Run test2 after the deploy job is successful.
           requires:
             - deploy
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
