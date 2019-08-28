@@ -19,6 +19,6 @@ describe('(Layout) PageLayout', () => {
       </PageLayout>
     )
       .find('.page-layout__viewport')
-      .should.contain(<Chifdgld />)
+      .should.contain(<Child />)
   })
 })
