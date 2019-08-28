@@ -38,9 +38,16 @@ jobs:
       # Attach to the created workspace.
           at: ~/repo
       - run: npm test
-      - run:
-          name: Deploy assets to CDN
-          command: npm run deploy
+
+  test2:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/node:7
+    steps:
+      - attach_workspace:
+      # Attach to the created workspace.
+          at: ~/repo
+      - run: npm test
 
 workflows:
   version: 2
@@ -60,3 +67,7 @@ workflows:
               only: /^v.*/
             branches:
               ignore: /.*/
+      - test2:
+      # Run test2 after the deploy job is successful.
+          requires:
+            - deploy
